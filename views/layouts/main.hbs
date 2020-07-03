@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Natours {{title}}</title>
@@ -12,10 +10,16 @@
       href="https://fonts.googleapis.com/css?family=Lato:300,300i,700"
       rel="stylesheet"
     />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet' />
+
   </head>
 <body>
   {{> header }}
   {{{body}}}
   {{> footer}}
+  {{#if jsFile}}
+    <script src="/js/{{jsFile}}"></script>
+  {{/if}}
 </body>
 </html>

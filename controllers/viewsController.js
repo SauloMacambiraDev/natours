@@ -29,5 +29,5 @@ exports.getTour = asyncCatch(async (req,res,next) => {
   const tourDescriptions = tour.description.split('\n')
 
 
-  return res.render('tour', { title: tour.name, tour, tourDescriptions })
+  return res.render('tour', { title: tour.name, tour, tourDescriptions, jsFile: 'mapbox.js' })
 })

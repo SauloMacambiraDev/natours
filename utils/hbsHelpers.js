@@ -34,5 +34,8 @@ module.exports = {
   GetSecondPhotoTour: (images) => {
     if (!Array.isArray(images) || !images[1]) return '';
     return images[1]
+  },
+  getLocationsData: (locations) => {
+    return JSON.stringify(locations)
   }
 }
