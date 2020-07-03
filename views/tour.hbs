@@ -6,7 +6,7 @@
       </div>
       <div class="heading-box">
         <h1 class="heading-primary">
-          <span>{{tour.name}}</span
+          <span>{{tour.name}} tour</span
           >
         </h1>
         <div class="heading-box__group">
@@ -64,78 +64,41 @@
           <div class="overview-box__group">
             <h2 class="heading-secondary ma-bt-lg">Your tour guides</h2>
 
-            <div class="overview-box__detail">
-              <img
-                src="/img/users/user-19.jpg"
-                alt="Lead guide"
-                class="overview-box__img"
-              />
-              <span class="overview-box__label">Lead guide</span>
-              <span class="overview-box__text">Steven Miller</span>
-            </div>
-            <div class="overview-box__detail">
-              <img
-                src="/img/users/user-18.jpg"
-                alt="Tour guide"
-                class="overview-box__img"
-              />
-              <span class="overview-box__label">Tour guide</span>
-              <span class="overview-box__text">Lisa Brown</span>
-            </div>
-            <div class="overview-box__detail">
-              <img
-                src="/img/users/user-17.jpg"
-                alt="Intern"
-                class="overview-box__img"
-              />
-              <span class="overview-box__label">Intern</span>
-              <span class="overview-box__text">Max Smith</span>
-            </div>
+            {{#each tour.guides}}
+              <div class="overview-box__detail">
+                <img
+                  src="/img/users/{{this.photo}}"
+                  alt="{{this.name}}"
+                  class="overview-box__img"
+                />
+                <span class="overview-box__label">{{getGuideRoleLabel this.role}}</span>
+                <span class="overview-box__text">{{this.name}}</span>
+              </div>
+            {{/each}}
           </div>
         </div>
       </div>
 
       <div class="description-box">
-        <h2 class="heading-secondary ma-bt-lg">About the park camper tour</h2>
-        <p class="description__text">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur.
-        </p>
-        <p class="description__text">
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est
-          laborum!
-        </p>
+        <h2 class="heading-secondary ma-bt-lg">About {{tour.name}} tour</h2>
+        {{#each tourDescriptions}}
+          <p class="description__text">
+            {{this}}
+          </p>
+        {{/each}}
       </div>
     </section>
 
     <section class="section-pictures">
-      <div class="picture-box">
-        <img
-          class="picture-box__img picture-box__img--1"
-          src="/img/tours/tour-5-1.jpg"
-          alt="The Park Camper Tour 1"
-        />
-      </div>
-      <div class="picture-box">
-        <img
-          class="picture-box__img picture-box__img--2"
-          src="/img/tours/tour-5-2.jpg"
-          alt="The Park Camper Tour 1"
-        />
-      </div>
-      <div class="picture-box">
-        <img
-          class="picture-box__img picture-box__img--3"
-          src="/img/tours/tour-5-3.jpg"
-          alt="The Park Camper Tour 1"
-        />
-      </div>
+      {{#each tour.images}}
+        <div class="picture-box">
+          <img
+            class="picture-box__img picture-box__img--{{getIndexNumber @index}}"
+            src="/img/tours/{{this}}"
+            alt="The Park Camper Tour {{getIndexNumber @index}}"
+          />
+        </div>
+      {{/each}}
     </section>
 
     <section class="section-map">
@@ -265,169 +228,29 @@
 
     <section class="section-reviews">
       <div class="reviews">
-        <div class="reviews__card">
-          <div class="reviews__avatar">
-            <img
-              src="/img/users/user-7.jpg"
-              alt="Jim Brown"
-              class="reviews__avatar-img"
-            />
-            <h6 class="reviews__user">Jim Brown</h6>
-          </div>
-          <p class="reviews__text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque
-            dignissimos sint quo commodi corrupti accusantium veniam saepe
-            numquam.
-          </p>
-          <div class="reviews__rating">
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-          </div>
-        </div>
 
-        <div class="reviews__card">
-          <div class="reviews__avatar">
-            <img
-              src="/img/users/user-14.jpg"
-              alt="Laura Wilson"
-              class="reviews__avatar-img"
-            />
-            <h6 class="reviews__user">Laura Wilson</h6>
+        {{#each tour.reviews as |review|}}
+          <div class="reviews__card">
+            <div class="reviews__avatar">
+              <img
+                src="/img/users/{{review.user.photo}}"
+                alt="{{review.user.name}}"
+                class="reviews__avatar-img"
+              />
+              <h6 class="reviews__user">{{review.user.name}}</h6>
+            </div>
+            <p class="reviews__text">
+              {{review.review}}
+            </p>
+            <div class="reviews__rating">
+              {{{getRatingStars review.rating}}}
+              {{!-- <svg class="reviews__star reviews__star--active">
+                <use xlink:href="/img/icons.svg#icon-star"></use>
+              </svg> --}}
+            </div>
           </div>
-          <p class="reviews__text">
-            Veniam adipisci blanditiis, corporis sit magnam aperiam ad, fuga
-            reiciendis provident deleniti cumque similique itaque animi,
-            sapiente obcaecati beatae accusantium.
-          </p>
-          <div class="reviews__rating">
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--inactive">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-          </div>
-        </div>
+        {{/each}}
 
-        <div class="reviews__card">
-          <div class="reviews__avatar">
-            <img
-              src="/img/users/user-15.jpg"
-              alt="Ben Hadley"
-              class="reviews__avatar-img"
-            />
-            <h6 class="reviews__user">Ben Hadley</h6>
-          </div>
-          <p class="reviews__text">
-            Debitis, nesciunt itaque! At quis officia natus. Suscipit,
-            reprehenderit blanditiis mollitia distinctio ducimus porro tempore
-            perspiciatis sunt vel.
-          </p>
-          <div class="reviews__rating">
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-          </div>
-        </div>
-
-        <div class="reviews__card">
-          <div class="reviews__avatar">
-            <img
-              src="/img/users/user-6.jpg"
-              alt="Alexander Jones"
-              class="reviews__avatar-img"
-            />
-            <h6 class="reviews__user">Alexander Jones</h6>
-          </div>
-          <p class="reviews__text">
-            Quaerat laborum eveniet ut aut maiores doloribus mollitia aperiam
-            quis praesentium sed inventore harum aliquam veritatis at adipisci
-            ea assumenda!
-          </p>
-          <div class="reviews__rating">
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-          </div>
-        </div>
-
-        <div class="reviews__card">
-          <div class="reviews__avatar">
-            <img
-              src="/img/users/user-3.jpg"
-              alt="Ayla Cornell"
-              class="reviews__avatar-img"
-            />
-            <h6 class="reviews__user">Ayla Cornell</h6>
-          </div>
-          <p class="reviews__text">
-            Perferendis quo aliquid iste quas laboriosam molestias illo est
-            voluptatem odit ea. Vero placeat culpa provident dicta maiores!
-          </p>
-          <div class="reviews__rating">
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-            <svg class="reviews__star reviews__star--active">
-              <use xlink:href="/img/icons.svg#icon-star"></use>
-            </svg>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -436,13 +259,13 @@
         <div class="cta__img cta__img--logo">
           <img src="/img/logo-white.png" alt="Natours logo" class="" />
         </div>
-        <img src="/img/tours/tour-5-2.jpg" alt="" class="cta__img cta__img--1" />
-        <img src="/img/tours/tour-5-1.jpg" alt="" class="cta__img cta__img--2" />
+        <img src="/img/tours/{{GetSecondPhotoTour tour.images}}" alt=" Tour picture" class="cta__img cta__img--1" />
+        <img src="/img/tours/{{GetSecondPhotoTour tour.images}}" alt="Tour picture" class="cta__img cta__img--2" />
 
         <div class="cta__content">
           <h2 class="heading-secondary">What are you waiting for?</h2>
           <p class="cta__text">
-            10 days. 1 adventure. Infinite memories. Make it yours today!
+            {{tour.duration}} days. 1 adventure. Infinite memories. Make it yours today!
           </p>
           <button class="btn btn--green span-all-rows">Book tour now!</button>
         </div>

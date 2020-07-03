@@ -76,7 +76,7 @@ const userSchema = new mongoose.Schema({
 
 // Pre Middleware Mongoose
 userSchema.pre(/^find/, function (next) {
-  // this poins to the current query 
+  // this poins to the current query
   // this.find({ active: true })
   this.find({ active: { $ne: false } })
 
@@ -100,7 +100,6 @@ userSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000 //1 seconds in the past than the token has been generated
   next()
 })
-
 
 // Instance method -> Allow each document retrieved from database to use such a method as, for example, a prototype method
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {

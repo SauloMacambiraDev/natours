@@ -26,6 +26,8 @@ exports.getTour = asyncCatch(async (req,res,next) => {
   if(!tourDocument) return res.render('tour', {title: 'Not Found'})
 
   const tour = tourDocument.toObject()
+  const tourDescriptions = tour.description.split('\n')
 
-  return res.render('tour', { title: tour.name, tour })
+
+  return res.render('tour', { title: tour.name, tour, tourDescriptions })
 })
