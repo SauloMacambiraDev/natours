@@ -1,0 +1,20 @@
+[
+    {
+        "fullName": "Saulo de Melo Macambira",
+        "cpf": 6202166380,
+        "email": "saulomelo30@gmail.com",
+        "gender": "Masculine"
+    },
+    {
+        "fullName": "Suyanne Guimarães Castro Palmeira",
+        "cpf": 622656898,
+        "email": "suyannegcp@gmail.com",
+        "gender": "Feminine"
+    },
+    {
+        "fullName": "Rosilene Maria de Melo Macambira",
+        "cpf": 12345678912,
+        "email": "rmmmacambira@hotmail.com",
+        "gender": "Feminine"
+    }
+]
