@@ -23,11 +23,16 @@ exports.getTour = asyncCatch(async (req,res,next) => {
     fields: 'review rating user'
   })
 
-  if(!tourDocument) return res.render('tour', {title: 'Not Found'})
+  if(!tourDocument) return res.render('tour', { title: 'Not Found' })
 
   const tour = tourDocument.toObject()
   const tourDescriptions = tour.description.split('\n')
 
 
-  return res.render('tour', { title: tour.name, tour, tourDescriptions, jsFile: 'mapbox.js' })
+  return res.status(200).render('tour', { title: tour.name, tour, tourDescriptions, jsFile: 'mapbox.js' })
+})
+
+exports.getLoginForm = asyncCatch( async (req,res,next) => {
+
+  res.status(200).render('login', {title: 'Log into your account '})
 })
