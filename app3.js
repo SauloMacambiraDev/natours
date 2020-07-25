@@ -10,6 +10,7 @@ const xss = require('xss-clean')
 const hpp = require('hpp')
 const hbs = require('express-handlebars')
 const hbsHelpers = require('./utils/hbsHelpers')
+const cookieParser = require('cookie-parser')
 // const fs = require('fs');
 
 // Routes
@@ -50,6 +51,7 @@ const limiter = rateLimit({
 app.use('/api', limiter)
 // Body parser, reading data from body into req.body
 app.use(express.json());
+app.use(cookieParser()); // parse data from the cookies
 // app.use(express.json({ limit: '10kb'})); only json requests on body with 10kb maximum
 
 // Data sanitization against NoSQL query injection
@@ -75,18 +77,23 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use((req, res, next) => {
-  // Defining a middleware HERE
-  //   console.log('Hello from the middleware');
-  //   printRequestInfo(req);
-  req.requestTime = new Date().toISOString();
-  console.log(`Request datetime(UTC) = ${req.requestTime}`);
+if (process.env.NODE_ENV === 'development'){
+  app.use((req, res, next) => {
 
-  //   If we didn't call the next() function, the request response cycle would be stuck at this point.
-  //   it woudn't be able to move on, and would never send a response to the client
-  //   so.. NEVER FORGET TO USE NEXT() FUNCTION IN MIDDLEWARES!
-  next();
-});
+    //   printRequestInfo(req);
+    req.requestTime = new Date().toISOString();
+    method = req.method;
+    endpoint = req.url
+    console.log(`${method} ${endpoint} - Request datetime(UTC) = ${req.requestTime}`);
+    console.log(req.cookies)
+
+    //   If we didn't call the next() function, the request response cycle would be stuck at this point.
+    //   it woudn't be able to move on, and would never send a response to the client
+    //   so.. NEVER FORGET TO USE NEXT() FUNCTION IN MIDDLEWARES!
+    next();
+  });
+
+}
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);

@@ -92,6 +92,9 @@ exports.protect = asyncCatch(async (req, res, next) => {
   const { authorization } = req.headers
   if (authorization && authorization.startsWith('Bearer')) {
     token = authorization.split(' ')[1]
+  } else if(req.cookies.jwt){
+    // in case the token is being fetched from Browser and not the API, search for 'jwt' cookie on cookie params
+    token = req.cookies.jwt
   }
 
   if (!token) return next(new AppError(`You are not logged in! Please log in to get access`, 401))

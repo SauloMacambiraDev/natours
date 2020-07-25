@@ -34,5 +34,5 @@ exports.getTour = asyncCatch(async (req,res,next) => {
 
 exports.getLoginForm = asyncCatch( async (req,res,next) => {
 
-  res.status(200).render('login', {title: 'Log into your account '})
+  res.status(200).render('login', {title: 'Log into your account ', jsFile: 'login.js'})
 })
