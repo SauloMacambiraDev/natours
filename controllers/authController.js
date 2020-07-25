@@ -243,3 +243,29 @@ exports.updatePassword = asyncCatch(async (req, res, next) => {
   })
 
 })
+
+// Only for rendered pages, no errors!
+exports.isLoggedIn = asyncCatch(async (req,res,next) => {
+
+  if(req.cookies.jwt){
+    // 1) Verify the token
+    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET)
+
+    // 2) Check if user still exists
+    const currentUser = await User.findById(decoded.id)
+    if (!currentUser) return next()
+
+    // 3) Check if the user changed password after the token was issued
+    if (currentUser.changedPasswordAfterToken(decoded.iat)) { //iat -> issued at
+      return next()
+    }
+
+    // THERE IS A LOGGED IN USER
+    // similar as using res.render('template.hbs', {user: currentUser}), which is, in other words, pass in data
+    // into the template
+
+    res.locals.user = currentUser.toObject()
+    req.user = currentUser
+  }
+  return next()
+})

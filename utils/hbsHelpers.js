@@ -3,6 +3,11 @@ module.exports = {
     if (!text) return ''
     return text.toUpperCase();
   },
+  getFirstName: (user) => {
+    const fullName = user.name
+    const firstName = fullName.split(' ')[0]
+    return firstName
+  },
   lenLocations: (locations) => {
     if (!Array.isArray(locations)) return 0;
     return locations.length

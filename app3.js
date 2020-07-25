@@ -70,14 +70,11 @@ app.use(hpp({
   ]
 }))
 
-const nodeEnv = process.env.NODE_ENV
-
-console.log(`NODE ENV --> ${nodeEnv}`);
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV.trim() == 'development') {
   app.use(morgan('dev'));
 }
 
-if (process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV.trim() == 'development'){
   app.use((req, res, next) => {
 
     //   printRequestInfo(req);
@@ -86,7 +83,6 @@ if (process.env.NODE_ENV === 'development'){
     endpoint = req.url
     console.log(`${method} ${endpoint} - Request datetime(UTC) = ${req.requestTime}`);
     console.log(req.cookies)
-
     //   If we didn't call the next() function, the request response cycle would be stuck at this point.
     //   it woudn't be able to move on, and would never send a response to the client
     //   so.. NEVER FORGET TO USE NEXT() FUNCTION IN MIDDLEWARES!

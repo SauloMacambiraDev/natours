@@ -1,18 +1,22 @@
 const login = async (email, password) => {
   try {
-    const result = await axios.post('http://localhost:8000/api/v1/users/login', {
+    const res = await axios.post('http://localhost:8000/api/v1/users/login', {
       email,
       password
     })
 
-    firstName = result.data.data.user.name.split(' ')[0]
-    window.setTimeout(() => {
+    if (res.data.status === 'success'){
+      firstName = res.data.data.user.name.split(' ')[0]
       alert(`Welcome to Natours ${firstName}!`)
-      // change to the home view
-    }, 1500)
+
+      // change to the home view after 1.5s
+      window.setTimeout(() => {
+        location.assign('/')
+      }, 1500)
+    }
   } catch (error) {
-    console.log(error)
-    alert(error.message)
+    // error.response.data where the json res object comes in
+    alert(error.response.data.message)
   }
 }
 
