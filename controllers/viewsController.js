@@ -29,10 +29,16 @@ exports.getTour = asyncCatch(async (req,res,next) => {
   const tourDescriptions = tour.description.split('\n')
 
 
-  return res.status(200).render('tour', { title: tour.name, tour, tourDescriptions, jsFile: 'mapbox.js' })
+  // return res.status(200).render('tour', { title: tour.name, tour, tourDescriptions, jsFile: 'mapbox.js' })
+  // Since we are bundling all js files, there is no need to specify the jsFile being used to specific
+  // view
+  return res.status(200).render('tour', { title: tour.name, tour, tourDescriptions })
 })
 
 exports.getLoginForm = asyncCatch( async (req,res,next) => {
 
-  res.status(200).render('login', {title: 'Log into your account ', jsFile: 'login.js'})
+  // res.status(200).render('login', {title: 'Log into your account ', jsFile: 'login.js'})
+  // Since we are bundling all js files, there is no need to specify the jsFile being used to specific
+  // view
+  res.status(200).render('login', { title: 'Log into your account ' })
 })

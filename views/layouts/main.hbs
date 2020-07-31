@@ -12,15 +12,16 @@
     />
     <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet' />
-
   </head>
 <body>
   {{> header }}
   {{{body}}}
   {{> footer}}
-  {{#if jsFile}}
+  {{!-- {{#if jsFile}}
     <script src="/js/{{jsFile}}"></script>
-  {{/if}}
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js'></script>
+  {{/if}} --}}
+  {{!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js'></script> --}}
+  {{!-- Output file from Parcel - Module bundler used to bundle all js files into one single and optimized Js file --}}
+  <script src="/js/bundle.js"></script>
 </body>
 </html>

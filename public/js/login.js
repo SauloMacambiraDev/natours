@@ -1,4 +1,7 @@
-const login = async (email, password) => {
+import axios from 'axios'
+
+export const login = async (email, password) => {
+
   try {
     const res = await axios.post('http://localhost:8000/api/v1/users/login', {
       email,
@@ -20,10 +23,5 @@ const login = async (email, password) => {
   }
 }
 
-document.querySelector('.form').addEventListener('submit', e => {
-  e.preventDefault(); // this prevents the page loading another page
 
-  email = document.getElementById('email').value
-  password = document.getElementById('password').value
-  login(email, password)
-})
+
