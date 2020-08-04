@@ -5,10 +5,11 @@ const userRouter = express.Router();
 
 userRouter.post('/signup', authController.signup)
 userRouter.post('/login', authController.login)
+userRouter.get('/logout', authController.logout)
 userRouter.post('/forgotPassword', authController.forgotPassword)
 userRouter.patch('/resetPassword/:resetToken', authController.resetPassword)
 
-// Will protect all routers that come after this point. 
+// Will protect all routers that come after this point.
 //Middlewares work in sequence.. so everything that comes after here will be hitted by this middleware first
 userRouter.use(authController.protect)
 

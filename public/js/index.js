@@ -1,11 +1,20 @@
 // Polyfill some Js features(EC6¨) in input file for bundling
 import '@babel/polyfill'
-import { login } from './login'
+import { login, logout } from './login'
 import { displayMap } from './mapbox'
+
+// CSS
+// import './../css/style.css'
+
+// Image assets
+// import './../img/pin.png'
+
 
 // DOM ELEMENTS
 const mapbox = document.getElementById('map')
-const loginForm = document.querySelector('form')
+const loginForm = document.querySelector('.form')
+const logOutBtn = document.querySelector('.nav__el--logout')
+
 
 // DELEGATION
 if(mapbox) {
@@ -17,18 +26,16 @@ if(mapbox) {
 }
 
 if (loginForm) {
-
   loginForm.addEventListener('submit', e => {
       e.preventDefault(); // this prevents the page loading another page
-      email = document.getElementById('email').value
-      password = document.getElementById('password').value
-      console.log(email, password)
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
       login(email, password)
   })
 }
 
 
-
+if (logOutBtn) logOutBtn.addEventListener('click', logout)
 
 
 

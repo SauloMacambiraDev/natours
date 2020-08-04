@@ -18,8 +18,7 @@
     "drop-db-debug": "node --inspect dev-data/data/import-dev-data --delete",
     "debug-ndb": "ndb server.js",
     "debug-production": "SET NODE_ENV=production && nodemon --inspect server.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --public-url /js --out-file bundle.js",
-    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "build-bundle": "webpack --config webpack.config.js"
   },
   "author": "Saulo",
   "license": "ISC",
@@ -45,8 +44,12 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "css-loader": "^4.2.0",
+    "file-loader": "^6.0.0",
     "nodemon": "^1.19.3",
-    "parcel-bundler": "^1.12.4"
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   },
   "engines": {
     "node": ">=10.0.0"
