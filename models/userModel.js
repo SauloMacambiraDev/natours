@@ -109,6 +109,7 @@ userSchema.methods.correctPassword = async function (candidatePassword, userPass
 
 userSchema.methods.changedPasswordAfterToken = function (JWTTimestamp) {
   if (this.passwordChangedAt) {
+    // converting to seconds
     const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10)
     // console.log(changedTimestamp, JWTTimestamp)
     return JWTTimestamp < changedTimestamp // if the date of 'json issued at' payload attribute is higher than the changedTimestamp, it means that the login was made after the user change this password. thus, the user has to log again

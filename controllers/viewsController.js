@@ -1,5 +1,8 @@
-const Tour = require('./../models/tourModel')
-const asyncCatch = require('./../utils/asyncCatch')
+const Tour = require('./../models/tourModel');
+const asyncCatch = require('./../utils/asyncCatch');
+const AppError = require('./../utils/appError');
+const User = require('./../models/userModel');
+
 
 exports.getOverview = asyncCatch(async (req, res, next) => {
   // 1) Get tour data from collection
@@ -23,7 +26,11 @@ exports.getTour = asyncCatch(async (req,res,next) => {
     fields: 'review rating user'
   })
 
-  if(!tourDocument) return res.render('tour', { title: 'Not Found' })
+  // if(!tourDocument) return res.render('tour', { title: 'Not Found' })
+
+  if (!tourDocument) {
+    return next(new AppError('There is no tour with that name.', 404))
+  }
 
   const tour = tourDocument.toObject()
   const tourDescriptions = tour.description.split('\n')
@@ -42,3 +49,27 @@ exports.getLoginForm = asyncCatch( async (req,res,next) => {
   // view
   res.status(200).render('login', { title: 'Log into your account ' })
 })
+
+exports.getAccount = (req, res) => {
+  return res.status(200).render('account', {
+    title: 'Account information'
+  });
+}
+
+// exports.updateUserData = asyncCatch(async (req, res, next) => {
+//   const { name, email } = req.body;
+
+//   const updatedUser = await User.findByIdAndUpdate(req.user.id, {
+//     name,
+//     email
+//   }, {
+//     new: true,
+//     runValidators: true
+//   });
+
+//   // return res.redirect('/account');
+//   return res.status(200).json({
+//     status: 'success',
+//     message: 'Data updated successfully!'
+//   });
+// })

@@ -50,7 +50,9 @@ const limiter = rateLimit({
 })
 app.use('/api', limiter)
 // Body parser, reading data from body into req.body
-app.use(express.json());
+app.use(express.json( { limit: '10kb' }));
+// Express Middleware responsible for receiving data from HTML FORM Elements
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser()); // parse data from the cookies
 // app.use(express.json({ limit: '10kb'})); only json requests on body with 10kb maximum
 
@@ -74,22 +76,21 @@ if (process.env.NODE_ENV.trim() == 'development') {
   app.use(morgan('dev'));
 }
 
-if (process.env.NODE_ENV.trim() == 'development'){
-  app.use((req, res, next) => {
+// if (process.env.NODE_ENV.trim() == 'development'){
+//   app.use((req, res, next) => {
 
-    //   printRequestInfo(req);
-    req.requestTime = new Date().toISOString();
-    method = req.method;
-    endpoint = req.url
-    console.log(`${method} ${endpoint} - Request datetime(UTC) = ${req.requestTime}`);
-    console.log(req.cookies)
-    //   If we didn't call the next() function, the request response cycle would be stuck at this point.
-    //   it woudn't be able to move on, and would never send a response to the client
-    //   so.. NEVER FORGET TO USE NEXT() FUNCTION IN MIDDLEWARES!
-    next();
-  });
-
-}
+//     //   printRequestInfo(req);
+//     req.requestTime = new Date().toISOString();
+//     method = req.method;
+//     endpoint = req.url
+//     console.log(`${method} ${endpoint} - Request datetime(UTC) = ${req.requestTime}`);
+//     console.log(req.cookies)
+//     //   If we didn't call the next() function, the request response cycle would be stuck at this point.
+//     //   it woudn't be able to move on, and would never send a response to the client
+//     //   so.. NEVER FORGET TO USE NEXT() FUNCTION IN MIDDLEWARES!
+//     next();
+//   });
+// }
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);

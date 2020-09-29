@@ -29,31 +29,64 @@ const handleJWTError = () => new AppError('Invalid token Please log in again!', 
 
 const handleJWTExpiredError = () => new AppError('Your token has expired! Please log in again', 401)
 
-const sendErrorDev = (err, res) => {
-  return res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack
-  })
-}
+const sendErrorDev = (err, req, res) => {
+  console.log(err)
 
-const sendErrorProd = (err, res) => {
-  if (err.isOperationalError){
-
+  if (req.originalUrl.startsWith('/api')){
     return res.status(err.statusCode).json({
       status: err.status,
-      message: err.message
+      error: err,
+      message: err.message,
+      stack: err.stack
     })
-  } else { // Programming or other unknown error: don't leak error details
+  }
 
+  // RENDERED WEBSITE
+  return res.status(err.statusCode).render('errorTemplate', {
+    title: 'Something went wrong',
+    msg: err.message
+  })
+
+
+}
+
+const sendErrorProd = (err, req, res) => {
+  // A) API
+  if (req.originalUrl.startsWith('/api')){
+    if (err.isOperationalError){
+
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message
+      })
+    }
+
+    // Programming or other unknown error: don't leak error details
     // 1) Log error
-    console.log('Error, ', err)
+    // console.log('Error, ', err)
 
     // 2) Send generic message
     return res.status(500).json({
       status: 'error',
       message: 'Internal error server'
+    })
+  }
+  // B) RENDERED WEBSITE
+  if (err.isOperationalError){
+
+    return res.status(err.statusCode).render('errorTemplate', {
+      title: 'Something went wrong',
+      msg: err.message
+    })
+  } else {
+
+    // 1) Log error
+    // console.log('Error, ', err)
+
+    // 2) Send generic message
+    return res.status(err.statusCode).render('errorTemplate', {
+      title: 'Something went wrong',
+      msg: 'Please try again later.'
     })
   }
 }
@@ -73,8 +106,8 @@ module.exports = (err, req, res, next) => {
     if(err.name === 'JsonWebTokenError') error = handleJWTError()
     if(err.name === 'TokenExpiredError') error = handleJWTExpiredError()
 
-    sendErrorProd(error, res)
+    sendErrorProd(error, req, res)
   } else {
-    sendErrorDev(err, res)
+    sendErrorDev(err, req, res)
   }
 }

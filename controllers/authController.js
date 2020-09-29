@@ -113,7 +113,9 @@ exports.protect = asyncCatch(async (req, res, next) => {
   }
 
   // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = currentUser
+  req.user = currentUser;
+  // Return as a variable of template engine since this middleware is protecting Views too
+  res.locals.user = currentUser.toObject();
   next()
 })
 
@@ -235,6 +237,11 @@ exports.updatePassword = asyncCatch(async (req, res, next) => {
 
   // 4) Log user in, send JWT
   const newToken = signToken(currentUser._id)
+
+  res.cookie('jwt', newToken, {
+    expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)),
+    httpOnly: true
+  });
 
   return res.status(200).json({
     status: 'success',

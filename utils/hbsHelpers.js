@@ -42,5 +42,8 @@ module.exports = {
   },
   getLocationsData: (locations) => {
     return JSON.stringify(locations)
+  },
+  isAdmin: role => {
+    return role == 'admin'
   }
 }

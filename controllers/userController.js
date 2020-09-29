@@ -116,18 +116,18 @@ exports.destroy = factory.deleteOne(User)
 
 // })
 
-// Simple update name and email 
+// Simple update name and email
 exports.defaultUpdate = asyncCatch(async (req, res, next) => {
 
   // 1) Check if fullName and email was given in the request body
-  if (!req.body.fullName || !req.body.email) return next(new AppError('Please, provide email and full name to update your profile', 400))
+  if (!req.body.name || !req.body.email) return next(new AppError('Please, provide email and name to update your profile', 400))
 
   // 2) Check if the passed email already exist in database
   // const userAlreadyExist = await User.findOne({ email: req.body.email })
   // if (userAlreadyExist) return next(new AppError('The email you provided is already in use. Please, choose another one', 400))
 
   // 3) Format data to update the user and send the response to the Client
-  const data = filterObj(req.body, 'fullName', 'email')
+  const data = filterObj(req.body, 'name', 'email')
 
   const updatedUser = await User.findByIdAndUpdate(req.user._id, data, {
     new: true,
@@ -135,11 +135,12 @@ exports.defaultUpdate = asyncCatch(async (req, res, next) => {
   })
 
   res.status(200).json({
-    message: 'success',
+    status: 'success',
+    message: 'Data has been updated successfully!',
     data: {
       user: updatedUser
     }
-  })
+  });
 })
 
 exports.deleteCurrentUser = asyncCatch(async (req, res, next) => {

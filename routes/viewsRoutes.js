@@ -4,12 +4,13 @@ const viewsController = require('./../controllers/viewsController')
 const authController = require('./../controllers/authController')
 
 // Check if user is logged in by reading cookies requests headers
-router.use(authController.isLoggedIn)
+// router.use(authController.isLoggedIn)
 
-router.get('/', viewsController.getOverview)
+router.get('/', authController.isLoggedIn, viewsController.getOverview)
+router.get('/tours/:slug', authController.isLoggedIn, viewsController.getTour)
+router.get('/login', authController.isLoggedIn, viewsController.getLoginForm)
+router.get('/account', authController.protect, viewsController.getAccount)
 
-router.get('/tours/:slug', viewsController.getTour)
-
-router.get('/login', viewsController.getLoginForm)
+// router.patch('/submit-user-data', authController.protect, viewsController.updateUserData);
 
 module.exports = router

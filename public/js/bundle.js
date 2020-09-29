@@ -12298,7 +12298,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_polyfill__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _login__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./login */ "./public/js/login.js");
 /* harmony import */ var _mapbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mapbox */ "./public/js/mapbox.js");
+/* harmony import */ var _updateSettings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./updateSettings */ "./public/js/updateSettings.js");
 // Polyfill some Js features(EC6¨) in input file for bundling
+
+
 
 
 
@@ -12311,10 +12314,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // DOM ELEMENTS
-const mapbox = document.getElementById('map')
-const loginForm = document.querySelector('.form')
-const logOutBtn = document.querySelector('.nav__el--logout')
-
+const mapbox = document.getElementById('map');
+const loginForm = document.querySelector('.form--login');
+const logOutBtn = document.querySelector('.nav__el--logout');
+const userDataForm = document.querySelector('.form-user-data');
+const userPasswordForm = document.querySelector('.form-user-password');
 
 // DELEGATION
 if(mapbox) {
@@ -12334,6 +12338,32 @@ if (loginForm) {
   })
 }
 
+if(userDataForm) userDataForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.querySelector('#name').value;
+  const email = document.querySelector('#email').value;
+  Object(_updateSettings__WEBPACK_IMPORTED_MODULE_3__["updateSettings"])({ name, email }, 'data');
+});
+
+if(userPasswordForm) userPasswordForm.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  document.querySelector('.btn--save-password').innerHTML = 'Updating...';
+
+
+
+  const currentPassword = document.querySelector('#password-current').value;
+  const password = document.querySelector('#password').value;
+  const passwordConfirm = document.querySelector('#password-confirm').value;
+
+  await Object(_updateSettings__WEBPACK_IMPORTED_MODULE_3__["updateSettings"])({ currentPassword, password, passwordConfirm }, 'password');
+
+  document.querySelector('#password-current').value = '';
+  document.querySelector('#password').value = '';
+  document.querySelector('#password-confirm').value = '';
+
+  document.querySelector('.btn--save-password').innerHTML = 'Save password';
+})
 
 if (logOutBtn) logOutBtn.addEventListener('click', _login__WEBPACK_IMPORTED_MODULE_1__["logout"])
 
@@ -12465,6 +12495,54 @@ const displayMap = (locations) => {
     }
   });
 
+}
+
+
+/***/ }),
+
+/***/ "./public/js/updateSettings.js":
+/*!*************************************!*\
+  !*** ./public/js/updateSettings.js ***!
+  \*************************************/
+/*! exports provided: updateSettings */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateSettings", function() { return updateSettings; });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _alerts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./alerts */ "./public/js/alerts.js");
+
+
+// updateData
+
+// type is either 'password' or 'data'
+const updateSettings = async (data, type) => {
+  try {
+    const url =
+                type === 'password'
+                ? `${window.location.origin}/api/v1/users/updatePassword`
+                : `${window.location.origin}/api/v1/users/updateProfile`;
+
+    const res = await axios__WEBPACK_IMPORTED_MODULE_0___default()({
+      method: 'PATCH',
+      url,
+      data
+    });
+
+    if(res.data.status === 'success'){
+      Object(_alerts__WEBPACK_IMPORTED_MODULE_1__["showAlert"])('success', `${type.toUpperCase()} updated successfully!`);
+    }
+
+  } catch(err) {
+    console.log(err.response.data);
+    if (err.response.data.status < 500) {
+      Object(_alerts__WEBPACK_IMPORTED_MODULE_1__["showAlert"])('error', err.response.data.message);
+    } else {
+      Object(_alerts__WEBPACK_IMPORTED_MODULE_1__["showAlert"])('error', `An error occurred while trying to update your account.`);
+    }
+  }
 }
 
 
