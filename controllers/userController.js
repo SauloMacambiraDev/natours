@@ -2,6 +2,37 @@ const User = require('./../models/userModel');
 const asyncCatch = require('./../utils/asyncCatch')
 const AppError = require('./../utils/appError')
 const factory = require('./handlerFactory')
+const multer = require('multer');
+
+// Configuring location, filename and its extension
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, `public/img/users`),
+  filename: (req, file, cb) => {
+    // user-${user_id}-${currentTimeStamp}.${fileExtension}
+    // file ARG - samething that is coming into req.file
+    const ext = file.mimetype.split('/')[1];
+    const fileName = `user-${req.user._id}-${Date.now()}.${ext}`;
+    cb(null, fileName);
+  }
+})
+
+// Check if the uploaded file is an Image
+const multerFilter = (req, file, cb) => {
+  if(file.mimetype.startsWith('image')){
+    cb(null, true);
+  } else {
+    cb(new AppError(`Not an image! Please upload only images.`, 400), false);
+  }
+}
+
+// dest: path where we want to store image through multipart form requests
+// const upload = multer({ dest: `public/image/users` });
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
+});
+
+exports.uploadUserPhoto = upload.single('photo');
 
 // Utility function
 const filterObj = (obj, ...allowedFields) => {
@@ -118,16 +149,16 @@ exports.destroy = factory.deleteOne(User)
 
 // Simple update name and email
 exports.defaultUpdate = asyncCatch(async (req, res, next) => {
+  console.log(req.file);
+  console.log(req.body);
 
   // 1) Check if fullName and email was given in the request body
   if (!req.body.name || !req.body.email) return next(new AppError('Please, provide email and name to update your profile', 400))
 
-  // 2) Check if the passed email already exist in database
-  // const userAlreadyExist = await User.findOne({ email: req.body.email })
-  // if (userAlreadyExist) return next(new AppError('The email you provided is already in use. Please, choose another one', 400))
+  // 2) Format data to update the user and send the response to the Client
+  const data = filterObj(req.body, 'name', 'email');
 
-  // 3) Format data to update the user and send the response to the Client
-  const data = filterObj(req.body, 'name', 'email')
+  if(req.file) data.photo = req.file.filename;
 
   const updatedUser = await User.findByIdAndUpdate(req.user._id, data, {
     new: true,

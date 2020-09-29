@@ -3,14 +3,14 @@ const express = require('express');
 const app = express();
 // const printRequestInfo = require('./utils/requestsUtil');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit')
-const helmet = require('helmet')
-const mongoSanitize = require('express-mongo-sanitize')
-const xss = require('xss-clean')
-const hpp = require('hpp')
-const hbs = require('express-handlebars')
-const hbsHelpers = require('./utils/hbsHelpers')
-const cookieParser = require('cookie-parser')
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
+const hbs = require('express-handlebars');
+const hbsHelpers = require('./utils/hbsHelpers');
+const cookieParser = require('cookie-parser');
 // const fs = require('fs');
 
 // Routes

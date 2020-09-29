@@ -1,6 +1,7 @@
 const userController = require('./../controllers/userController');
-const authController = require('./../controllers/authController')
+const authController = require('./../controllers/authController');
 const express = require('express');
+
 const userRouter = express.Router();
 
 userRouter.post('/signup', authController.signup)
@@ -15,7 +16,10 @@ userRouter.use(authController.protect)
 
 userRouter.get('/myProfile', userController.getMe, userController.show)
 userRouter.patch('/updatePassword', authController.updatePassword)
-userRouter.patch('/updateProfile', userController.defaultUpdate)
+
+// upload.single('photo') -> multer object which accepts one file (single) and are receiving
+// through the multipart form data the key 'photo'
+userRouter.patch('/updateProfile', userController.uploadUserPhoto, userController.defaultUpdate)
 userRouter.delete('/deactivateUser', userController.deleteCurrentUser)
 
 // Will protect all routers from all users but 'admin' after this point
