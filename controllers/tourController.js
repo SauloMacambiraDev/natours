@@ -1,9 +1,67 @@
-const fs = require('fs')
-const Tour = require('../models/tourModel')
-const APIFeatures = require('./../utils/apiFeatures')
-const asyncCatch = require('./../utils/asyncCatch')
-const AppError = require('./../utils/appError')
-const factory = require('./handlerFactory')
+const fs = require('fs');
+const Tour = require('../models/tourModel');
+const APIFeatures = require('./../utils/apiFeatures');
+const asyncCatch = require('./../utils/asyncCatch');
+const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory');
+
+const multer = require('multer');
+const sharp = require('sharp');
+
+const multerStorage = multer.memoryStorage();
+
+// Check if the uploaded file is an Image
+const multerFilter = (req, file, cb) => {
+  if(file.mimetype.startsWith('image')){
+    cb(null, true);
+  } else {
+    cb(new AppError(`Not an image! Please upload only images.`, 400), false);
+  }
+}
+
+// dest: path where we want to store image through multipart form requests
+// const upload = multer({ dest: `public/image/users` });
+// if multer is called without any diskStorage option, the file will be stored in buffer, not in the disk
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
+});
+
+// upload.single('photo'); (x) Single image and reproduce req.file
+// upload.array('images', 5); (x) Array of images - accepting 5 max count and reproduce req.files
+// upload.fields([]) Control the files that are being uploaded and reproduce req.files
+exports.uploadTourImages = upload.fields([
+  { name: 'imageCover', maxCount: 1 }, // maxCount says that only one field will have name 'imageCover' to be processed
+  { name: 'images', maxCount: 3 }
+]); // (v) multiple images
+
+exports.resizeTourImages = asyncCatch(async (req, res, next) => {
+  if(!req.files.imageCover || !req.files.images) return next();
+
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+  // Process imageCover and images fields coming from uploadTourImages middleware and store on disk
+  await sharp(req.files.imageCover[0].buffer)
+          .resize(2000,1333)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/tours/${req.body.imageCover}`)
+
+  req.body.images = [];
+
+  await Promise.all(req.files.images.map(async (file, index) => {
+    const fileName= `tour-${req.params.id}-$${Date.now()}-${index + 1}.jpeg`;
+
+    await sharp(file.buffer)
+            .resize(2000,1333)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toFile(`public/img/tours/${fileName}`);
+    req.body.images.push(fileName);
+  }));
+
+  return next();
+});
 
 // Middleware
 exports.checkBodyMiddleware = (req, res, next) => {

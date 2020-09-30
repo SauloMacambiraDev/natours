@@ -12342,7 +12342,14 @@ if(userDataForm) userDataForm.addEventListener('submit', e => {
   e.preventDefault();
   const name = document.querySelector('#name').value;
   const email = document.querySelector('#email').value;
-  Object(_updateSettings__WEBPACK_IMPORTED_MODULE_3__["updateSettings"])({ name, email }, 'data');
+  const photo = document.querySelector('#photo').files[0];
+
+  const form = new FormData();
+  form.append('name', name);
+  form.append('email', email);
+  form.append('photo', photo);
+
+  Object(_updateSettings__WEBPACK_IMPORTED_MODULE_3__["updateSettings"])(form, 'data');
 });
 
 if(userPasswordForm) userPasswordForm.addEventListener('submit', async e => {
@@ -12519,6 +12526,11 @@ __webpack_require__.r(__webpack_exports__);
 
 // type is either 'password' or 'data'
 const updateSettings = async (data, type) => {
+
+  // if 'data' argument is coming as a FormData() instead of an Object,
+  // axios will automatically convert FormData() into an Object containing
+  // the multipart/form-data coming from 'type'=='data'
+
   try {
     const url =
                 type === 'password'
@@ -12536,7 +12548,7 @@ const updateSettings = async (data, type) => {
     }
 
   } catch(err) {
-    console.log(err.response.data);
+    // console.log(err.response.data);
     if (err.response.data.status < 500) {
       Object(_alerts__WEBPACK_IMPORTED_MODULE_1__["showAlert"])('error', err.response.data.message);
     } else {

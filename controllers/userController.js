@@ -3,18 +3,21 @@ const asyncCatch = require('./../utils/asyncCatch')
 const AppError = require('./../utils/appError')
 const factory = require('./handlerFactory')
 const multer = require('multer');
+const sharp = require('sharp');
 
-// Configuring location, filename and its extension
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, `public/img/users`),
-  filename: (req, file, cb) => {
-    // user-${user_id}-${currentTimeStamp}.${fileExtension}
-    // file ARG - samething that is coming into req.file
-    const ext = file.mimetype.split('/')[1];
-    const fileName = `user-${req.user._id}-${Date.now()}.${ext}`;
-    cb(null, fileName);
-  }
-})
+// Configuring  file location, filename and its extension
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => cb(null, `public/img/users`),
+//   filename: (req, file, cb) => {
+//     // user-${user_id}-${currentTimeStamp}.${fileExtension}
+//     // file ARG - samething that is coming into req.file
+//     const ext = file.mimetype.split('/')[1];
+//     const fileName = `user-${req.user._id}-${Date.now()}.${ext}`;
+//     cb(null, fileName);
+//   }
+// });
+
+const multerStorage = multer.memoryStorage();
 
 // Check if the uploaded file is an Image
 const multerFilter = (req, file, cb) => {
@@ -27,12 +30,28 @@ const multerFilter = (req, file, cb) => {
 
 // dest: path where we want to store image through multipart form requests
 // const upload = multer({ dest: `public/image/users` });
+// if multer is called without any diskStorage option, the file will be stored in buffer, not in the disk
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter
 });
 
 exports.uploadUserPhoto = upload.single('photo');
+
+exports.resizeUserPhoto = asyncCatch(async (req, res, next) => {
+  if(!req.file) return next();
+
+  req.file.filename = `user-${req.user._id}-${Date.now()}.jpeg`;
+  // Better than pass the file as parameter to sharp() searching into file system the right file req.file.filename
+  // is better use storage: multer.memoryStorage(), since it stores the file in memory as Buffer (becoming a buffer object).
+  await sharp(req.file.buffer)
+                      .resize(500, 500)
+                      .toFormat('jpeg')
+                      .jpeg({ quality: 90 })
+                      .toFile(`public/img/users/${req.file.filename}`);
+
+  return next();
+});
 
 // Utility function
 const filterObj = (obj, ...allowedFields) => {

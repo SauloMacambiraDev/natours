@@ -4,6 +4,11 @@ import { showAlert } from './alerts';
 
 // type is either 'password' or 'data'
 export const updateSettings = async (data, type) => {
+
+  // if 'data' argument is coming as a FormData() instead of an Object,
+  // axios will automatically convert FormData() into an Object containing
+  // the multipart/form-data coming from 'type'=='data'
+
   try {
     const url =
                 type === 'password'
@@ -21,7 +26,7 @@ export const updateSettings = async (data, type) => {
     }
 
   } catch(err) {
-    console.log(err.response.data);
+    // console.log(err.response.data);
     if (err.response.data.status < 500) {
       showAlert('error', err.response.data.message);
     } else {
