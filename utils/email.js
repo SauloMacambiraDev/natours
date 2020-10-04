@@ -1,8 +1,9 @@
 const nodemailer = require('nodemailer');
-const handlebars = require('express-handlebars');
+const hbs = require('express-handlebars');
 const htmlToText = require('html-to-text');
+const hbsHelpers = require('./hbsHelpers');
+const path = require('path');
 
-// new Email(user, url).sendWelcome();
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
@@ -33,14 +34,23 @@ module.exports = class Email {
   // Send the actual email
   async send(template, subject) {
     // 1) Render HTML based on HandlebarsJs template engine
+
+    const handlebars = hbs.create({
+      layoutsDir: path.resolve(__dirname,'..', 'views', 'layouts'),
+      partialsDir: path.resolve(__dirname,'..', 'views', 'partials'),
+      extname: '.hbs',
+      defaultLayout: 'baseEmail',
+      helpers: hbsHelpers
+    });
+
     /*
       handlebars.render('full-path-to-view',context, options).then(function(hbsTemplate){
         hbsTemplate contains the rendered html, do something with it...
         handlebars.render() returns a Promise with the compiled html
       });
     */
-    const html = await handlebars.render(`${__dirname}/../views/emails/${template}.hbs`, {
-      firstName: this.firstName,
+    const html = await handlebars.renderView(`${__dirname}/../views/email/${template}.hbs`, {
+      name: this.firstName,
       url: this.url,
       subject
     } );
@@ -60,6 +70,10 @@ module.exports = class Email {
 
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natours Family!');
+  }
+
+  async sendPasswordReset(){
+    await this.send('passwordReset', 'Your password reset token (valid for only 10 minutes)');
   }
 }
 

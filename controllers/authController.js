@@ -2,9 +2,10 @@ const jwt = require('jsonwebtoken')
 const User = require('./../models/userModel')
 const asyncCatch = require('./../utils/asyncCatch')
 const AppError = require('./../utils/appError')
-const sendEmail = require('./../utils/email')
 const { promisify } = require('util')
 const crypto = require('crypto')
+const Email = require('./../utils/email');
+
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -38,7 +39,7 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = asyncCatch(async (req, res, next) => {
   // const newUser = await User.create(req.body) -> Dangerows since anyone can set to become admin
-  const { fullName, email, password, passwordConfirm, passwordChangedAt, role } = req.body
+  const { fullName, email, password, passwordConfirm, passwordChangedAt, role } = req.body;
 
   const newUser = await User.create({
     name: fullName,
@@ -47,7 +48,11 @@ exports.signup = asyncCatch(async (req, res, next) => {
     passwordConfirm,
     passwordChangedAt,
     role
-  })
+  });
+
+  // req.get('host') will return localhost:3000
+  const url = `${req.protocol}://${req.get('host')}/account`;
+  new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, res)
 
@@ -143,15 +148,10 @@ exports.forgotPassword = asyncCatch(async (req, res, next) => {
   await user.save();
 
   // 3) Send ir to user's email
-  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`
-  const message = `Forgot your password? Submit a PATCH request with your new password and password confirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`
 
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'Your password reset token (valid for 10 minutes)',
-      message
-    })
+    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`
+    await new Email(user, resetURL).sendPasswordReset();
 
     return res.status(200).json({
       status: 'success',
