@@ -12,10 +12,12 @@ mongoose.connect(strConn, {
   useFindAndModify: false,
   useUnifiedTopology: true
 })
-.then(conn => console.log('Remote database successfully connected'))
+.then(conn => {
+  // console.log('Remote database successfully connected')
+})
 .catch(err => {
-  console.log(`Connection with database has failed. Reason:`)
-  console.log(err)
+  // console.log(`Connection with database has failed. Reason:`)
+  // console.log(err)
 })
 
 // In case we had fake user data or an administrador default user to be created by default
@@ -26,11 +28,11 @@ const importUsers = async () => {
 
     // await User.create(users)
     // console.log('Users were created successfully')
-    console.log('Not implemented yet')
+    // console.log('Not implemented yet')
   }catch(err){
-    console.log(err)
+    // console.log(err)
   }
-  console.log('Closing execution..')
+  // console.log('Closing execution..')
   process.exit()
 }
 
@@ -40,16 +42,16 @@ const deleteAllUsers = async () => {
   try{
 
     await User.deleteMany()
-    console.log(`All users were successfully deleted!`)
+    // console.log(`All users were successfully deleted!`)
   }catch(err){
-    console.log(`Coudn't delete all users. Reason:`)
-    console.log(err)
+    // console.log(`Coudn't delete all users. Reason:`)
+    // console.log(err)
   }
-  console.log('Closing execution..')
+  // console.log('Closing execution..')
   process.exit()
 }
 
-console.log(process.argv[2])
+// console.log(process.argv[2])
 
 
 if (process.argv[2] && process.argv[2] === '--import'){

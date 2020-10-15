@@ -148,7 +148,17 @@
           <p class="cta__text">
             {{tour.duration}} days. 1 adventure. Infinite memories. Make it yours today!
           </p>
-          <button class="btn btn--green span-all-rows">Book tour now!</button>
+
+          {{#if user}}
+            <button
+                id="book-tour"
+                class="btn btn--green span-all-rows"
+                data-tour-id="{{tour.id}}">Book tour now!</button>
+          {{else}}
+            <a href="/login" class="btn btn--green span-all-rows">Log in to book tour!</a>
+          {{/if}}
+
+
         </div>
       </div>
     </section>

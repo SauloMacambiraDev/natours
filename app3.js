@@ -11,6 +11,8 @@ const hpp = require('hpp');
 const hbs = require('express-handlebars');
 const hbsHelpers = require('./utils/hbsHelpers');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const compression = require('compression');
 // const fs = require('fs');
 
 // Routes
@@ -19,6 +21,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const addressRouter = require('./routes/addressRoutes');
 const viewsRouter = require('./routes/viewsRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 
 
 // We need to install express-handlebars which is the lib for HandlebarsJs Engine
@@ -35,6 +38,12 @@ app.set('views', path.join(__dirname, 'views'))
 app.disable('view cache');
 
 // MIDDLEWARES
+
+// Enable cross origin request sharing - Allow multiple origin requests (header ORIGIN from request)
+// app.use(cors({
+//   credentials: true,
+//   origin: (process.env.NODE_ENV.trim() === 'development') ? 'http://localhost:8000' : 'www.example.com'
+// }));
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -70,9 +79,12 @@ app.use(hpp({
     'difficulty',
     'price'
   ]
-}))
+}));
 
-if (process.env.NODE_ENV.trim() == 'development') {
+// Compress all the text that is sent to the client
+app.use(compression());
+
+if (process.env.NODE_ENV.trim() === 'development') {
   app.use(morgan('dev'));
 }
 
@@ -94,8 +106,10 @@ if (process.env.NODE_ENV.trim() == 'development') {
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/reviews', reviewRouter)
-app.use('/api/v1/addresses', addressRouter)
+app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/addresses', addressRouter);
+app.use('/api/v1/bookings', bookingRouter);
+
 app.use(viewsRouter)
 // require('./routes/index')(app)
 

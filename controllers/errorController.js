@@ -4,8 +4,8 @@ const AppError = require('./../utils/appError')
 const handleValidationErrorDB = err => {
 
   const errors = Object.values(err.errors).map(el => el.message)
-  console.log('Errors by validation:')
-  console.log(errors)
+  // console.log('Errors by validation:')
+  // console.log(errors)
 
   const message = `Invalid input data. ${errors.join('. ')}`
   return new AppError(message, 400);
@@ -13,8 +13,8 @@ const handleValidationErrorDB = err => {
 
 const handleDuplicateFieldsDB = err => {
   duplicatedKey = err.errmsg.match(/(["'])(\\?.)*?\1/)[0]
-  console.log('Duplicated key: ')
-  console.log(duplicatedKey)
+  // console.log('Duplicated key: ')
+  // console.log(duplicatedKey)
 
   const message = `Duplicated field value: ${duplicatedKey}. Please, use another value!`
   return new AppError(message, 400)
@@ -30,7 +30,7 @@ const handleJWTError = () => new AppError('Invalid token Please log in again!', 
 const handleJWTExpiredError = () => new AppError('Your token has expired! Please log in again', 401)
 
 const sendErrorDev = (err, req, res) => {
-  console.log(err)
+  // console.log(err)
 
   if (req.originalUrl.startsWith('/api')){
     return res.status(err.statusCode).json({
@@ -63,7 +63,7 @@ const sendErrorProd = (err, req, res) => {
 
     // Programming or other unknown error: don't leak error details
     // 1) Log error
-    // console.log('Error, ', err)
+    console.log('Error, ', err)
 
     // 2) Send generic message
     return res.status(500).json({

@@ -1,18 +1,8 @@
-process.on('unhandledRejection', err => {
-    console.log('UNHANDLED REJECTION Shutting down...')
-    console.log(err)
-    console.log(err.name, err.message) //err.name and err.message are default properties from Error in NodeJs
-  // server.close(()=> {
-    // server.close() wait requests pending or processing end being processed to shutdown the server
-    process.exit(1) // Shutdown immediately all request and connections
-    // })
-  })
-
-  process.on('uncaughtException', err => {
-    console.log('UNCAUGHT EXCEPTION Shutting down...')
-    console.log(err)
-    console.log(err.name, err.message)
-    process.exit(1)
+process.on('uncaughtException', err => {
+  console.log('UNCAUGHT EXCEPTION Shutting down...')
+  // console.log(err)
+  console.log(err.name, err.message)
+  process.exit(1)
 })
 
 // Enviroment variables has to be defined befor instantiate app object
@@ -43,4 +33,13 @@ const server = app.listen(port, () => {
   console.log(`Listenning on port: ${port}`);
 });
 
+process.on('unhandledRejection', err => {
+  console.log('UNHANDLED REJECTION Shutting down...')
+  // console.log(err)
+  console.log(err.name, err.message) //err.name and err.message are default properties from Error in NodeJs
 
+  // server.close() wait requests pending or processing end being processed to shutdown the server
+  server.close(()=> {
+    process.exit(1) // Shutdown immediately all request and connections
+  })
+});

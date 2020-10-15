@@ -11,7 +11,7 @@ exports.checkBodyMiddleware = (req, res, next) => {
   const { name, price } = req.body;
 
   if (!name || !price) {
-    console.log('Request post body not valid');
+    // console.log('Request post body not valid');
     return res.status(400).json({
       status: 'failure',
       message: `Invalid request body to create a tour. `
@@ -22,7 +22,7 @@ exports.checkBodyMiddleware = (req, res, next) => {
 };
 
 exports.checkID = async (req, res, next, val) => {
-  console.log(`Tour id is: ${val}`)
+  // console.log(`Tour id is: ${val}`)
   const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, { encoding: 'utf-8' }))
 
   if (req.params.id * 1 > tours.length) {
@@ -64,19 +64,19 @@ exports.getAllTours = async (req, res) => {
 
     let queryStr = JSON.stringify(queryObj)
     queryStr = queryStr.replace(/\b(gte|gt|le|lte)\b/g, match => `$${match}`)
-    console.log(JSON.parse(queryStr))
+    // console.log(JSON.parse(queryStr))
 
     // Object filtering notation on mongoose -> No need for await shortcut, we only pick up the Query object
     // const query = Tour.find(queryObj)
 
     let query = Tour.find(JSON.parse(queryStr))
 
-    // 2) Sorting 
+    // 2) Sorting
     // Obs.: api/v1/tours?sort=price,ratingsAverage will be splited and joined to become sort: 'price ratingsAverage' in asceding order
     // api/v1/tours?sort=-price,-ratingsAverage, mongoose will bring data in desceding order
     if (req.query.sort) {
       const sortBy = req.query.sort.split(',').join(' ')
-      console.log(`Sorted with params: ${sortBy}`)
+      // console.log(`Sorted with params: ${sortBy}`)
       query = query.sort(sortBy)
     } else {
       query = query.sort('-createdAt')

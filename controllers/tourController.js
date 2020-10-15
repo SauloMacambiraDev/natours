@@ -68,7 +68,7 @@ exports.checkBodyMiddleware = (req, res, next) => {
     const { name, price } = req.body;
 
     if (!name || !price) {
-        console.log('Request post body not valid');
+        // console.log('Request post body not valid');
         return res.status(400).json({
             status: 'failure',
             message: `Invalid request body to create a tour. `
@@ -79,7 +79,7 @@ exports.checkBodyMiddleware = (req, res, next) => {
 };
 
 exports.checkID = async (req, res, next, val) => {
-    console.log(`Tour id is: ${val}`)
+    // console.log(`Tour id is: ${val}`)
     const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`, { encoding: 'utf-8' }))
 
     if (req.params.id * 1 > tours.length) {
@@ -358,7 +358,7 @@ exports.getDistances = asyncCatch(async (req,res,next) => {
   // 0.001 for kilometer - samething as dividing by 1000 / 0.000621371 - meter to mile
   const multiplier = unit === 'mi'? 0.000621371 : 0.001
 
-  console.log(`Distances from lat: ${lat}, and longitude: ${lng}`)
+  // console.log(`Distances from lat: ${lat}, and longitude: ${lng}`)
 
   //$geoNear property will use the field startLocation since a 2DSphere index was created to calculate distances using GeoJSON on MongoDb
   const distances = await Tour.aggregate([
@@ -385,7 +385,7 @@ exports.getDistances = asyncCatch(async (req,res,next) => {
     }
   ])
 
-  console.log(distances)
+  // console.log(distances)
 
   return res.status(200).json({
     status: 'success',

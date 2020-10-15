@@ -16,9 +16,9 @@ mongoose.connect(DB, {
   useFindAndModify: false,
   useUnifiedTopology: true
 }).then(conn => {
-  console.log('Remote database connection was established')
+  // console.log('Remote database connection was established')
 }).catch(err => {
-  console.log(`Coundt make connection with the remote database. Reason:\n${err}`)
+  // console.log(`Coundt make connection with the remote database. Reason:\n${err}`)
 })
 
 // READ JSON FILE
@@ -32,15 +32,15 @@ const importData = async () => {
   try {
     // .create() method accepts an array of tours for each element in the array passed in
     await Tour.create(tours)
-    console.log('Tour Data successfully loaded!')
+    // console.log('Tour Data successfully loaded!')
     await User.create(users, { validateBeforeSave: false })
-    console.log('User Data successfully loaded!')
+    // console.log('User Data successfully loaded!')
     await Review.create(reviews)
-    console.log('Review Data successfully loaded!')
+    // console.log('Review Data successfully loaded!')
     // await User.create(users)
     // console.log('User Data successfully loaded!')
   } catch (err) {
-    console.log(err)
+    // console.log(err)
   }
   process.exit()
 }
@@ -50,13 +50,13 @@ const deleteData = async () => {
   try {
 
     await Tour.deleteMany();
-    console.log('Tour Data successfully deleted!')
+    // console.log('Tour Data successfully deleted!')
     await User.deleteMany();
-    console.log('User Data successfully deleted!')
+    // console.log('User Data successfully deleted!')
     await Review.deleteMany();
-    console.log('Review Data successfully deleted!')
+    // console.log('Review Data successfully deleted!')
   } catch (err) {
-    console.log(err)
+    // console.log(err)
   }
   process.exit()
 }
@@ -67,4 +67,4 @@ if (process.argv[2] && process.argv[2] === '--import') {
   deleteData()
 }
 
-console.log(process.argv)
+// console.log(process.argv)

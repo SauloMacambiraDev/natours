@@ -15,8 +15,8 @@ exports.checkIfAddressExist = async (req, res, next) => {
     }
 
   } catch (err) {
-    console.log('Error while trying to check if address exists')
-    console.log(err)
+    // console.log('Error while trying to check if address exists')
+    // console.log(err)
 
     return res.status(404).json({
       status: 'failure',
@@ -31,8 +31,8 @@ exports.checkIfAddressExist = async (req, res, next) => {
 exports.getAllAddresses = async (req, res) => {
 
   try {
-    console.log('Query string to get All addresses:')
-    console.log(req.query)
+    // console.log('Query string to get All addresses:')
+    // console.log(req.query)
     const addresses = await Address.find(req.query).sort('state');
 
     return res.status(200).json({
@@ -43,8 +43,8 @@ exports.getAllAddresses = async (req, res) => {
       }
     })
   } catch (err) {
-    console.log('Error while trying to fetch address, reason:')
-    console.log(err)
+    // console.log('Error while trying to fetch address, reason:')
+    // console.log(err)
     res.status(404).json({
       status: 'failure',
       message: 'Address not found'
@@ -78,8 +78,8 @@ exports.getAddressByState = async (req, res) => {
       }
     })
   } catch (err) {
-    console.log('Error while trying to fetch address by STATE, reason:')
-    console.log(err)
+    // console.log('Error while trying to fetch address by STATE, reason:')
+    // console.log(err)
     res.status(404).json({
       status: 'failure',
       message: err

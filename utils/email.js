@@ -9,14 +9,21 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = 'Saulo de Melo Macambira <goleiro041@gmail.com>'
+    this.from = 'Saulo de Melo Macambira <saulomelo30@gmail.com>'
   }
 
   newTransport() {
-    if (process.env.NODE_ENV.trim()  === 'production') {
+    // if (process.env.NODE_ENV.trim()  === 'production') {
       // Sendgrid = Real Email service provider in production
-      return 1;
-    }
+      return nodemailer.createTransport({
+        host: process.env.SENDGRID_HOST,
+        port: process.env.SENDGRID_PORT,
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD,
+        }
+      });
+    // }
 
     // IF process.env.NODE_ENV === 'development'
     const transporter = nodemailer.createTransport({

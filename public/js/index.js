@@ -1,9 +1,9 @@
 // Polyfill some Js features(EC6¨) in input file for bundling
-import '@babel/polyfill'
-import { login, logout } from './login'
-import { displayMap } from './mapbox'
-import { updateSettings } from './updateSettings'
-
+import '@babel/polyfill';
+import { login, logout } from './login';
+import { displayMap } from './mapbox';
+import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 
 // CSS
 // import './../css/style.css'
@@ -18,6 +18,8 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const bookBtn = document.querySelector('#book-tour');
+
 
 // DELEGATION
 if(mapbox) {
@@ -73,7 +75,21 @@ if(userPasswordForm) userPasswordForm.addEventListener('submit', async e => {
 
 if (logOutBtn) logOutBtn.addEventListener('click', logout)
 
+if (bookBtn) {
+  bookBtn.addEventListener('click', e => {
+    e.target.textContent = 'Processing...'
+    // In js, on data attribute, whenever wee see tour-id, will be convert to tourId (camel case format)
+    const { tourId } = e.target.dataset;
+    bookTour(tourId).then((data) => {
 
+      e.target.textContent = 'Book tour now!'
+    })
+    .catch(err => {
+      // console.log(err)
+    });
+  })
+
+}
 
 
 

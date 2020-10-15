@@ -3,6 +3,7 @@ const authController = require('./../controllers/authController')
 const reviewController = require('./../controllers/reviewController')
 const reviewRouter = express.Router({ mergeParams: true })
 
+
 // reviewController.store examples of possibles URL granted from mergeParams: true Router option
 // POST /tour/213f1234asdf/reviews
 // POST /reviews
