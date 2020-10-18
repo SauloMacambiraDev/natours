@@ -46,10 +46,15 @@ app.disable('view cache');
 // MIDDLEWARES
 
 // Enable cross origin request sharing - Allow multiple origin requests (header ORIGIN from request)
+app.use(cors()) // headers[Access-Control-Allow-Origin] === '*' for only 'Simple requests'=GET, POST methods
+// Handling Pre-Flight phase requests for PUT, PATCH, DELETE, with cookies, custom headers, etc
+app.options('*', cors());
 // app.use(cors({
 //   credentials: true,
 //   origin: (process.env.NODE_ENV.trim() === 'development') ? 'http://localhost:8000' : 'www.example.com'
 // }));
+
+
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
