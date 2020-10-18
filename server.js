@@ -1,10 +1,3 @@
-process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXCEPTION Shutting down...')
-  // console.log(err)
-  console.log(err.name, err.message)
-  process.exit(1)
-})
-
 // Enviroment variables has to be defined befor instantiate app object
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -33,6 +26,13 @@ const server = app.listen(port, () => {
   console.log(`Listenning on port: ${port}`);
 });
 
+process.on('uncaughtException', err => {
+  console.log('UNCAUGHT EXCEPTION Shutting down...')
+  // console.log(err)
+  console.log(err.name, err.message)
+  process.exit(1)
+})
+
 process.on('unhandledRejection', err => {
   console.log('UNHANDLED REJECTION Shutting down...')
   // console.log(err)
@@ -43,3 +43,17 @@ process.on('unhandledRejection', err => {
     process.exit(1) // Shutdown immediately all request and connections
   })
 });
+
+/*
+  SIGTERM is the signal from Heroku Plataform to indicate to the related Deno Container that
+  host the natours application to shutdown in order to reduce maintaining cost into Heroku's Platform
+  So, when a SIGTERM signal is sended from Heroku, we will handle the Event below
+*/
+
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECEVEID, Shutting down gracefully');
+  server.close(() => {
+    // No need to use process.exit(1) since SIGTERM will shutdown the application automatically
+    console.log('Process terminated!');
+  })
+})
