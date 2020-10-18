@@ -1,6 +1,7 @@
 const path = require('path')
 const express = require('express');
 const app = express();
+
 // const printRequestInfo = require('./utils/requestsUtil');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -23,6 +24,11 @@ const addressRouter = require('./routes/addressRoutes');
 const viewsRouter = require('./routes/viewsRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 
+/*
+ Allow Proxys intervation on incoming Requests from client
+ this is necessary in order to check header 'x-forwarded-proto' with heroku's proxys
+*/
+app.enable('trust proxy');
 
 // We need to install express-handlebars which is the lib for HandlebarsJs Engine
 app.engine('.hbs', hbs({

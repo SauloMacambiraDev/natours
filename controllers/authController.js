@@ -13,17 +13,32 @@ const signToken = id => {
   })
 }
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id)
 
-  const cookieOptions = {
-    expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)), // convert to milliseconds
-    httpOnly: true //cookie can't be accessed or modified by any way in the browser
-  }
+  // const cookieOptions = {
+  //   expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)), // convert to milliseconds
+  //   httpOnly: true //cookie can't be accessed or modified by any way in the browser
+  // }
 
-  if(process.env.NODE_ENV === 'production') cookieOptions.secure = true //will only be sent with HTTPs connection
+  // Even thoughb the NODE_ENV is in production, it doesn't mean that is hosted with https protocol
+  // if(process.env.NODE_ENV === 'production') cookieOptions.secure = true //will only be sent with HTTPs connection
 
-  res.cookie('jwt', token, cookieOptions)
+  /*
+    Heroku plataform has a proxy server which manipulate (and modify) requests, redirecting to the
+    server where your application is being hosted, not enabling the req.secure to verify if there is
+    indeed a HTTPS protocol behind your application. One workaround is to verify if the header key
+    'x-forwarded-proto' has value 'https', like this:
+      if (req.headers['x-forwarded-proto'] === 'https')
+  */
+  // if(req.secure || req.headers['x-forwarded-proto'] === 'https') cookieOptions.secure = true;
+
+
+  res.cookie('jwt', token, {
+    expires: new Date(Date.now() + (process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000)),
+    httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
+  })
 
   // remove the password from the Output
   user.password = undefined
@@ -54,7 +69,7 @@ exports.signup = asyncCatch(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/account`;
   new Email(newUser, url).sendWelcome();
 
-  createSendToken(newUser, 201, res)
+  createSendToken(newUser, 201, req, res)
 
   // const token = signToken(newUser._id)
 
@@ -81,7 +96,7 @@ exports.login = asyncCatch(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401))
   }
   // 3) If everything ok, send token to client
-  createSendToken(user, 200, res)
+  createSendToken(user, 200, req, res)
   // const token = signToken(user._id)
 
   // res.status(200).json({
