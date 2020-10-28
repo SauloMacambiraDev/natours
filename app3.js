@@ -23,7 +23,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const addressRouter = require('./routes/addressRoutes');
 const viewsRouter = require('./routes/viewsRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
-const bookingController = require('./routes/bookingController');
+const bookingController = require('./controllers/bookingController');
 
 /*
  Allow Proxys intervation on incoming Requests from client
