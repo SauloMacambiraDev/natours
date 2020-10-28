@@ -23,6 +23,7 @@ const reviewRouter = require('./routes/reviewRoutes');
 const addressRouter = require('./routes/addressRoutes');
 const viewsRouter = require('./routes/viewsRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./routes/bookingController');
 
 /*
  Allow Proxys intervation on incoming Requests from client
@@ -69,6 +70,17 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!'
 })
 app.use('/api', limiter)
+
+/**
+ * - Checkout webhook session handler from Stripe
+ * The reason why we are implementing this Route Handler here is because we need to get the data from request
+ * as a STREAM type, not JSON type. When the request comes from client side, the middleware express.json() will convert
+ * any STREAM data into JSON data, not enabling our application to deal with checkout sessions from Stripe.
+ *
+ * The express middleware express.raw() will receive data on req.body as STREAM/Raw
+ */
+app.post('/webhook-checkout', express.raw({ type: 'application/json' }), bookingController.webhookCheckout);
+
 // Body parser, reading data from body into req.body
 app.use(express.json( { limit: '10kb' }));
 // Express Middleware responsible for receiving data from HTML FORM Elements

@@ -10,8 +10,8 @@ const User = require('./../models/userModel');
 
 router.get(
             '/',
-            bookingController.createBookingCheckout,
             authController.isLoggedIn,
+            // bookingController.createBookingCheckout, -> Old (unsafe) approach
             viewsController.getOverview);
 router.get('/tours/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
