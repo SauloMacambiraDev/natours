@@ -19,7 +19,8 @@
     "drop-db-debug": "node --inspect dev-data/data/import-dev-data --delete",
     "debug-ndb": "ndb server.js",
     "debug-production": "SET NODE_ENV=production && nodemon --inspect server.js",
-    "build-bundle": "webpack --config webpack.config.js"
+    "build-bundle": "webpack --config webpack.config.js",
+    "build-bundle-prod": "webpack --mode production --config webpack.config.js"
   },
   "author": "Saulo",
   "license": "ISC",

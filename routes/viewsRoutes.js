@@ -8,6 +8,8 @@ const User = require('./../models/userModel');
 // Check if user is logged in by reading cookies requests headers
 // router.use(authController.isLoggedIn)
 
+router.use(viewsController.alerts);
+
 router.get(
             '/',
             authController.isLoggedIn,

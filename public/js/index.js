@@ -4,6 +4,7 @@ import { login, logout } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { showAlert } from './alerts';
 
 // CSS
 // import './../css/style.css'
@@ -85,12 +86,14 @@ if (bookBtn) {
       e.target.textContent = 'Book tour now!'
     })
     .catch(err => {
-      // console.log(err)
+      e.target.textContent = 'Book tour now!'
+      showAlert('failure', 'An error occurred. Please try again later')
     });
   })
 
 }
 
-
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alertMessage) showAlert('success', alertMessage, 20);
 
 
